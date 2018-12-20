@@ -1,5 +1,11 @@
 let instance
 
+var reareadyGoAudio
+var trueAudio
+var falseAudio
+var titckAudio
+
+
 /**
  * 统一的音效管理器
  */
@@ -10,16 +16,16 @@ export default class Music {
 
     instance = this
 
-    this.readyGoAudio = new Audio()
+    this.readyGoAudio = wx.createInnerAudioContext();
     this.readyGoAudio.src = 'audio/readygo.mp3'
 
-    this.trueAudio = new Audio()
+    this.trueAudio = wx.createInnerAudioContext();
     this.trueAudio.src = 'audio/true.mp3'
 
-    this.falseAudio = new Audio()
-    this.flaseAudio.src = 'audio/false.mp3'
+    this.falseAudio = wx.createInnerAudioContext();
+    this.falseAudio.src = 'audio/false.mp3'
 
-    this.titckAudio = new Audio()
+    this.titckAudio = wx.createInnerAudioContext();
     this.titckAudio.loop = true
     this.titckAudio.src = 'audio/titck.mp3'
 
