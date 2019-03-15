@@ -123,7 +123,7 @@ export default class Main {
             
 
             title: '本次 : ' + self.getLevelWithScore(databus.score) + ' 历史最好: ' + self.getLevelWithScore(databus.historyMaxScore),
-            content: '矮油，再接再厉',
+            content: '矮油，再接再厉，覉ladfklkakdfklkdkfalkdfkkllkdskfkasdlflkaskdfklaskldfklaksldfklksdlfknmcxmvnz,xcnvklsdkfjasldfjlkajkdfksjdakfjkslkdafjkdwoiejflaksdfjlkadlfasdflkasjkdflalkdflaksd',
             cancelText: '排行第22',
             confirmText: '重新开始',
             success(res) {

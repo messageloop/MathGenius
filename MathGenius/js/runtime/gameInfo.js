@@ -12,3 +12,4 @@ export default class BackGround extends Sprite {
     super(BG_IMG_SRC, BG_WIDTH, BG_HEIGHT)
 
   }
+}
