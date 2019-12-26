@@ -45,17 +45,24 @@ cc.Class({
     // update (dt) {},
 
 
-    startAction(){
+    startAction: function(){
 
         this.readyGoUI.show();
-        this.hide();
+
+        //2秒之后关闭
+        this.scheduleOnce( function(){
+
+            this.hide();
+
+        }.bind(this), 2);
+
     },
 
-    show(){
+    show: function(){
 
         this.node.active = true;
     },
-    hide(){
+    hide: function(){
         this.node.active = false;
     },
 
