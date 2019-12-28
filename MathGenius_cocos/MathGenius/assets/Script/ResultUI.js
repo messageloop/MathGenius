@@ -41,6 +41,10 @@ cc.Class({
 
 
     show: function(){
+
+
+        console.log('adfa');
+
         this.node.active = true;
     },
     hide: function(){

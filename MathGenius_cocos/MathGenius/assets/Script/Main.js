@@ -36,7 +36,7 @@ cc.Class({
 
             console.log('test');
             
-            // resultView.show();
+            resultView.show();
 
         }.bind(this), 5);
 
