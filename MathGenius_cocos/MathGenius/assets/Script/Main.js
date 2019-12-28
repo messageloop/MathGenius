@@ -34,7 +34,7 @@ cc.Class({
         
         this.scheduleOnce( function(){
 
-            console.log('test');
+            console.log('test2');
             
             resultView.show();
 
