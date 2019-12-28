@@ -38,4 +38,12 @@ cc.Class({
     },
 
     // update (dt) {},
+
+
+    show: function(){
+        this.node.active = true;
+    },
+    hide: function(){
+        this.node.active = false;
+    },
 });

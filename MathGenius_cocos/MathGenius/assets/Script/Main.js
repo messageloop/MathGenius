@@ -1,24 +1,22 @@
+const resultView = require('ResultUI');
+const MAXCOUNTDOWN = 40;
+
+
 cc.Class({
     extends: cc.Component,
 
     properties: {
-        label: {
-            default: null,
-            type: cc.Label
-
-        },
-        // defaults, set visually when attaching this script to the Canvas
-        text: 'Hello, World!',
+    
         startView: cc.Node,
-        resultView: cc.Node,
-        countDownTimes: 40,
-        countDownText: '倒计时：40',
+        countDownTimes: MAXCOUNTDOWN,
+        countDownText: cc.Label,
+        Result: cc.Node
 
     },
 
     // use this for initialization
     onLoad: function () {
-        this.label.string = this.text;
+
 
     },
 
@@ -29,14 +27,25 @@ cc.Class({
 
         this.schedule( function(){
 
-            this.countDownText = 
+            this.countDownTimes--;
 
-        }.bind(this),1, countDownTimes);
+        }.bind(this),1, MAXCOUNTDOWN-1);
+
+        
+        this.scheduleOnce( function(){
+
+            console.log('test');
+            
+            // resultView.show();
+
+        }.bind(this), 5);
 
     },
 
     // called every frame
     update: function (dt) {
+
+        this.countDownText.string = '倒计时：' + this.countDownTimes;
 
     },
 
