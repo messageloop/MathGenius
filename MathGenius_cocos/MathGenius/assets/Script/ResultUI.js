@@ -30,8 +30,8 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        startUI: StartUI,
-        readyGoUI: ReadyGoUI
+        startUI: cc.Node,
+        myReadyGoUI: cc.Node
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -58,10 +58,10 @@ cc.Class({
 
     goHome: function(){
 
-
+        this.startUI.show();
     },
     restart:function(){
 
-
+        this.myReadyGoUI.show();
     },
 });

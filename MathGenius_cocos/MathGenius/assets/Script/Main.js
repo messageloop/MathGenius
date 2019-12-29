@@ -10,7 +10,7 @@ cc.Class({
         startView: cc.Node,
         countDownTimes: MAXCOUNTDOWN,
         countDownText: cc.Label,
-        myResult: resultView
+        myResult: cc.Node
 
     },
 
