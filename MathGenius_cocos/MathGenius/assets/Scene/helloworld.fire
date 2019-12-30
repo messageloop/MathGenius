@@ -2910,15 +2910,9 @@
       "__id__": 63
     },
     "_enabled": true,
-    "maxScoreLabel": {
-      "__id__": 72
-    },
-    "startBtn": {
-      "__id__": 74
-    },
-    "readyGoUI": {
-      "__id__": 84
-    },
+    "maxScoreLabel": null,
+    "startBtn": null,
+    "readyGoUI": null,
     "_id": "b0yD97U3dKYbd69KEt4GaG"
   },
   {
@@ -3927,7 +3921,7 @@
     "goLabel": {
       "__id__": 93
     },
-    "_id": "6frC9rY+JKYo8BK8v5E2uj"
+    "_id": "ddxpzZvmVGPZtMJQDg6BxV"
   },
   {
     "__type__": "cc.Node",

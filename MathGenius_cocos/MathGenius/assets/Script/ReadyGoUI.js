@@ -8,7 +8,8 @@
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-const MainGame = require('Main');
+// const TheMainGame = require('Main');
+
 
 cc.Class({
     extends: cc.Component,
@@ -16,8 +17,7 @@ cc.Class({
     properties: {
     
         readyLabel:cc.Node,
-        goLabel: cc.Node,
-        mainGame: MainGame
+        goLabel: cc.Node
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -42,6 +42,8 @@ cc.Class({
         //2秒之后关闭
         this.scheduleOnce( function(){
 
+            var theMainGame = cc.find('Canva/Main');
+            theMainGame.show();
             this.hide();
 
         }.bind(this), 2);
