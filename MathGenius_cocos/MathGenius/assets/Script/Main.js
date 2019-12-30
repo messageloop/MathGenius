@@ -10,7 +10,7 @@ cc.Class({
         startView: cc.Node,
         countDownTimes: MAXCOUNTDOWN,
         countDownText: cc.Label,
-        myResult: cc.Node
+        myResult: resultView
 
     },
 
@@ -19,8 +19,6 @@ cc.Class({
 
 
     },
-
-
 
     start: function (){
 
@@ -34,8 +32,7 @@ cc.Class({
         
         this.scheduleOnce( function(){
 
-            console.log('test3');
-            
+            this.hide();
             this.myResult.show();
 
         }.bind(this), 5);

@@ -9,7 +9,7 @@
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const StartUI = require('StartUI');
-const ReadyGoUI = require('ReadGoUI');
+const ReadyGoUI1 = require('ReadyGoUI');
 
 cc.Class({
     extends: cc.Component,
@@ -30,8 +30,8 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        startUI: cc.Node,
-        myReadyGoUI: cc.Node
+        startUI: StartUI,
+        okReady: ReadyGoUI1,
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -47,9 +47,6 @@ cc.Class({
 
     show: function(){
 
-
-        console.log('adfa');
-
         this.node.active = true;
     },
     hide: function(){
@@ -58,10 +55,12 @@ cc.Class({
 
     goHome: function(){
 
+        this.hide();
         this.startUI.show();
     },
     restart:function(){
 
-        this.myReadyGoUI.show();
+        this.hide();
+        this.okReady.show();
     },
 });
