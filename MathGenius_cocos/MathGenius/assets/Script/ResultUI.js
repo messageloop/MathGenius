@@ -11,6 +11,8 @@
 const StartUI = require('StartUI');
 const ReadyGoUI1 = require('ReadyGoUI');
 
+const DataBus = require('DataBus');
+
 cc.Class({
     extends: cc.Component,
 
@@ -30,8 +32,13 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
+
+        currentScoreText: cc.Label,
+        maxScoreText: cc.Label,
+
         startUI: StartUI,
         okReady: ReadyGoUI1,
+
     },
 
     // LIFE-CYCLE CALLBACKS:
@@ -47,7 +54,14 @@ cc.Class({
 
     show: function(){
 
+
+
+        this.currentScoreText.string = DataBus.currentScore;
+        this.maxScoreText.string = DataBus.maxScore;
+
         this.node.active = true;
+
+
     },
     hide: function(){
         this.node.active = false;
@@ -62,5 +76,6 @@ cc.Class({
 
         this.hide();
         this.okReady.show();
+        this.okReady.init();
     },
 });

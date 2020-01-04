@@ -24,7 +24,10 @@ cc.Class({
 
     // onLoad () {},
 
-    start () {
+
+    init: function(){
+
+        console.log('ReadyGoUI start');
 
         //刚开始显示  准备
         this.readyLabel.active = true;
@@ -42,11 +45,18 @@ cc.Class({
         //2秒之后关闭
         this.scheduleOnce( function(){
 
-            var theMainGame = cc.find('Canva/Main');
+            var theMainGame = cc.find('Canvas/Main').getComponent('Main');
+            theMainGame.init();
             theMainGame.show();
             this.hide();
 
         }.bind(this), 2);
+    },
+
+    start () {
+
+        // this.init();
+ 
     },
 
     // update (dt) {},

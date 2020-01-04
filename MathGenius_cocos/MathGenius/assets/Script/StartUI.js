@@ -9,6 +9,7 @@
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
 const ReadyGoUI = require('ReadyGoUI');
+const DataBus = require('DataBus');
 
 cc.Class({
     extends: cc.Component,
@@ -29,7 +30,7 @@ cc.Class({
         //         this._bar = value;
         //     }
         // },
-        maxScoreLabel: cc.Node,
+        maxScoreLabel: cc.Label,
         startBtn: cc.Node,
         readyGoUI:ReadyGoUI 
     },
@@ -40,14 +41,21 @@ cc.Class({
 
     start () {
 
+        this.maxScoreLabel.string = DataBus.maxScore;
+
+
     },
 
-    // update (dt) {},
+     update (dt) {
+
+
+     },
 
 
     startAction: function(){
 
         this.readyGoUI.show();
+        this.readyGoUI.init();
 
         //2秒之后关闭
         this.scheduleOnce( function(){
@@ -59,6 +67,8 @@ cc.Class({
     },
 
     show: function(){
+
+        this.maxScoreLabel.string = DataBus.maxScore;
 
         this.node.active = true;
     },
