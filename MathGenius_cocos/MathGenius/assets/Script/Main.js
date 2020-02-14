@@ -1,6 +1,13 @@
 const logic = require('Logic');
 const resultView = require('ResultUI');
+const StartUI = require('StartUI');
+const ReadyGoUI = require('ReadyGoUI');
+const DataBus = require('DataBus');
+
+
+
 const MAXCOUNTDOWN = 40;
+const MAX_CORRECT_TIME = 5000;
 
 
 let myLogic = new logic();
@@ -16,11 +23,14 @@ cc.Class({
 
     properties: {
     
-        startView: cc.Node,
+
+        trueAudio:cc.AudioClip,
+        falseAudio:cc.AudioClip,
+        buttonAudio:cc.AudioClip,
+
+        startView: StartUI,
         countDownTimes: MAXCOUNTDOWN,
         countDownText: cc.Label,
-
-        scoreText: cc.Label,
 
         questionText: cc.Label,
         answer1: cc.Label,
@@ -36,15 +46,21 @@ cc.Class({
         A3TrueMark: cc.Sprite,
         A4TrueMark: cc.Sprite,
 
-        myResult: resultView
+        myResult: resultView,
+
+        pausedView:cc.Node,
+
+        readyGo:ReadyGoUI
 
     },
 
     // use this for initialization
     onLoad: function () {
-        console.log('main on load');
+
+        this.initPausedView();
 
     },
+
 
 
 
@@ -52,42 +68,81 @@ cc.Class({
 
         this.countDownTimes = MAXCOUNTDOWN;
         myScore = 0;
-        this.scoreText.string = 0;
+        var that = this;
+        this.refreshNow(that);
     },
 
-    start: function (){
+    initPausedView:function(){
 
+        this._isShowPausedView = false;
+        this.pausedView.x = 800;
+        this._showAction = cc.moveTo(0.5, 0, this.pausedView.y);
+        this._hideAction = cc.moveTo(0.5, 800, this.pausedView.y);
+    },
 
-        var theTickit = this.schedule( function(){
+    titckAction:function(){
 
-            this.countDownTimes--;
+        var that = this;
+
+        this._theTickitCallBack = function(){
+
+            that.countDownTimes--;
 
             //如何倒计时 到了，就把结果页面显示出来
             if (0 == this.countDownTimes)
             {
 
+                myScore = Math.round(myScore);
+
                 DataBus.currentScore = myScore;
                 if (DataBus.maxScore < myScore)
                 {
-                    DataBus.maxScore = myScore;
+                    // DataBus.maxScore = myScore;
+                    DataBus.setMaxScore(myScore);
+
+                    wx.setUserCloudStorage({
+                        KVDataList: [{ key: 'score', value: String(myScore) }],
+                        success: res => {
+                            // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
+                            let openDataContext = wx.getOpenDataContext();
+                            openDataContext.postMessage({
+                                type: 'updateMaxScore',
+                            });
+                        },
+                        fail: res => {
+                        }
+                    });
+                }else
+                {
+                    // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
+                    let openDataContext = wx.getOpenDataContext();
+                    openDataContext.postMessage({
+                        type: 'updateMaxScore',
+                    });
                 }
 
-                this.countDownTimes = MAXCOUNTDOWN;
-                this.hide();
-                this.myResult.show();
+                that.countDownTimes = MAXCOUNTDOWN;
+                that.hide();
+                that.myResult.show();
             }
+        };
+        
+        cc.director.getScheduler().schedule(this._theTickitCallBack, this, 1, false);
+    },
 
-        }.bind(this),1);
+    start: function (){
 
+        
+        
     },
 
     // called every frame
     update: function (dt) {
 
 
-        this.scoreText.string = myScore;
+        // this.scoreText.string = myScore;
 
-        this.countDownText.string = '倒计时：' + this.countDownTimes;
+        this.countDownText.string = this.countDownTimes;
         this.questionText.string = myQuestion;
         if (myAnswer.length >= 4 )
         {
@@ -96,18 +151,14 @@ cc.Class({
             this.answer3.string = myAnswer[2];
             this.answer4.string = myAnswer[3];
         }
-
-
     },
 
 
     answer1Action: function(){
 
-
-
         this.markAnswerTrueOrFalse(0);
 
-        this.refresh();
+        this.delayRefresh();
 
     },
 
@@ -115,7 +166,7 @@ cc.Class({
 
         this.markAnswerTrueOrFalse(1);
 
-        this.refresh();
+        this.delayRefresh();
 
     },
 
@@ -123,7 +174,7 @@ cc.Class({
 
         this.markAnswerTrueOrFalse(2);
 
-        this.refresh();
+        this.delayRefresh();
 
     },
 
@@ -131,38 +182,44 @@ cc.Class({
 
         this.markAnswerTrueOrFalse(3);
 
-        this.refresh();
+        this.delayRefresh();
 
     },
 
-    refresh: function(){
+    delayRefresh: function(){
 
+
+
+        var that = this;
 
         this.scheduleOnce( function(){
 
-            this.trueMark.node.active = false;
-            this.falseMark.node.active = false;
-            this.a1TrueMark.node.active = false;
-            this.A2TrueMark.node.active = false;
-            this.A3TrueMark.node.active = false;
-            this.A4TrueMark.node.active = false;
+            that.refreshNow(that);
 
-            myQuestion = myLogic.updateQuestion();
-            myAnswer = myLogic.answer();
-
+                                                                                                                                          
         }.bind(this),0.5);
 
  
     },
 
+    refreshNow: function(that){
+
+        that.trueMark.node.active = false;
+        that.falseMark.node.active = false;
+        that.a1TrueMark.node.active = false;
+        that.A2TrueMark.node.active = false;
+        that.A3TrueMark.node.active = false;
+        that.A4TrueMark.node.active = false;
+                                                                                         
+        myQuestion = myLogic.updateQuestion();
+        myAnswer = myLogic.answer();
+    },
+
+
+
     checkAnswer: function(index){
        
         var correctAnswerIndex =  myAnswer.indexOf(myLogic.getResult().toString());
-
-        // console.log('myAnswer:'+myAnswer);
-        // console.log('correctAnswerIndex:'+correctAnswerIndex);
-        // console.log('getResult:'+myLogic.getResult());
-
 
         if (index == correctAnswerIndex)
         {
@@ -188,55 +245,51 @@ cc.Class({
             myScore += 2;            
         }else
         {
-            if (myScore >= 0)
+            if (myScore > 0)
             {
-                myScore -= 1;
+                myScore -= 2;
             }
 
         }
 
-
         //根据速度加分
-        this.canAddPlusScore(bCorrect);
+       var theAddScore = this.canAddPlusScore(bCorrect);
+
     },
 
     canAddPlusScore(bCorrect)
     {
-        console.log(lastPointTime)
         var currentTime =  new Date().getTime()
         var dValue = currentTime - lastPointTime
-        console.log(dValue)
 
         // 1.答对每题2分，且根据答题反应时间乘以加分系统[3,4]:0.5,[2,3):1,[1，2):1.5,[0.5,1):2,[0,0.5):2.5
         // 2.答错 - 1分
         // 3.连续答对2题且反应时间在1s以内 + 2，连续答对3题 + 3，连续答对4题 + 4，连续答对5题 + 5，以此内推
 
+
+
+        var theAddScore = 0;
+
         if (bCorrect)
         {
 
-            if (dValue >= 3000 && dValue < 4000)
+            if (dValue < MAX_CORRECT_TIME)
             {
-                myScore += 0.5
+               theAddScore = (MAX_CORRECT_TIME - dValue)*1.0/1000;
 
-            }else if (dValue >= 2000 && dValue < 3000)
-            {
-                myScore += 1
+               myScore += theAddScore;
 
-            }else if (dValue >= 1000 && dValue < 2000)
-            {
-                myScore += 1.5
-
-            }else if (dValue >= 500 && dValue < 1000)
-            {
-                myScore += 2
-
-            }else if (dValue >= 0 && dValue < 500)
-            {
-                myScore += 2.5
             }
+
+            lastPointTime = currentTime
+
+        }else
+        {
+            lastPointTime = 0
         }
 
-        lastPointTime = currentTime
+        return theAddScore;
+        
     },
 
 
@@ -245,21 +298,19 @@ cc.Class({
 
         //分数统计
         var bCorrect = this.checkAnswer(index);
+
         this.addScore(bCorrect);
+
+        this.playTheAnswerAudio(bCorrect);
 
 
         if (this.checkAnswer(index))
         {
 
-            console.log('true:');
-
             this.trueMark.node.active = true;
 
         }else
         {
-
-            console.log('false:');
-
 
             this.falseMark.node.active = true;
 
@@ -285,6 +336,35 @@ cc.Class({
 
     },
 
+    playTheAnswerAudio:function(bCorrect){
+
+        if (bCorrect)
+        {
+            cc.audioEngine.play(this.trueAudio, false, 1);
+
+        }else
+        {
+            cc.audioEngine.play(this.falseAudio, false, 1);
+
+        }
+
+    },
+
+
+    startAction:function(){
+
+        if (cc.director.getScheduler().isTargetPaused(this))
+        {
+            cc.director.getScheduler().resumeTarget(this);
+
+        }else
+        {
+            this.titckAction();
+
+        }
+
+    },
+
 
     show: function (){
         this.node.active = true;
@@ -294,6 +374,78 @@ cc.Class({
 
         // this.unscheduleAllCallbacks();
         this.node.active = false;
+    },
+
+    pausedAction:function(){
+
+
+        this.pausedView.runAction(this._showAction);
+        this._isShowPausedView = true;
+
+
+        cc.director.getScheduler().pauseTarget(this);
+
+
+
+    },
+
+    continueAction:function(){
+
+        this.pausedView.runAction(this._hideAction);
+        this._isShowPausedView = false;
+
+
+        cc.audioEngine.play(this.buttonAudio, false, 1);
+
+        this.readyGo.init();
+
+        this.readyGo.show();
+
+
+    },
+    restartAction:function(){
+
+        this.pausedView.runAction(this._hideAction);
+        this._isShowPausedView = false;
+
+
+        cc.audioEngine.play(this.buttonAudio, false, 1);
+
+
+        var life = DataBus.getLifeValue();
+
+        if (life <= 0)
+        {
+            //生命值+1
+            var life = DataBus.getLifeValue();
+            life++;
+            DataBus.setLifeValue(life);
+
+
+            wx.shareAppMessage({
+                title: '机灵脑袋瓜'
+            })
+            return;
+        }
+
+        //生命值减去1
+        var life = DataBus.getLifeValue();
+        life--;
+        DataBus.setLifeValue(life);
+
+
+        this.init();
+
+        this.readyGo.init();
+        this.readyGo.show();
+
+    },
+    homeAction:function(){
+
+        this.pausedView.runAction(this._hideAction);
+        this._isShowPausedView = false;
+
+        this.startView.show();
     },
 
 

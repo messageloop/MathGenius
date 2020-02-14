@@ -15,33 +15,19 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+
+
+        buttonAudio:cc.AudioClip,
+        lifeLabel:cc.Label,
         maxScoreLabel: cc.Label,
         startBtn: cc.Node,
         readyGoUI:ReadyGoUI 
     },
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {},
-
     start () {
 
-        this.maxScoreLabel.string = DataBus.maxScore;
+        this.maxScoreLabel.string = DataBus.getMaxScore();
+        this.lifeLabel.string = DataBus.getLifeValue();
 
 
     },
@@ -51,24 +37,71 @@ cc.Class({
 
      },
 
+     share:function(){
+
+        //生命值+1
+        var life = DataBus.getLifeValue();
+        life++;
+        DataBus.setLifeValue(life);
+
+        this.lifeLabel.string = DataBus.getLifeValue();
+
+
+
+        wx.shareAppMessage({
+            title: '机灵脑袋瓜'
+          })
+     },
+
 
     startAction: function(){
 
-        this.readyGoUI.show();
+
+
+        cc.audioEngine.play(this.buttonAudio, false, 1);
+
+
+        var life = DataBus.getLifeValue();
+
+        if (life <= 0)
+        {
+            this.share();
+            return;
+        }
+
+
+        //准备界面开始初始化和准备
         this.readyGoUI.init();
 
-        //2秒之后关闭
-        this.scheduleOnce( function(){
+        //准备界面显示
+        this.readyGoUI.show();
 
-            this.hide();
 
-        }.bind(this), 2);
+        //游戏主页初始化
+        var theMainGame = cc.find('Canvas/Main').getComponent('Main');
+        theMainGame.init();
+
+        //游戏主页显示
+        theMainGame.show();
+
+
+        //本页面消失
+        this.hide();
+
+
+        //每玩一次生命值减去1
+        var life = DataBus.getLifeValue();
+        life--;
+        DataBus.setLifeValue(life);
+
 
     },
 
     show: function(){
 
-        this.maxScoreLabel.string = DataBus.maxScore;
+        this.maxScoreLabel.string = DataBus.getMaxScore();
+        this.lifeLabel.string = DataBus.getLifeValue();
+
 
         this.node.active = true;
     },

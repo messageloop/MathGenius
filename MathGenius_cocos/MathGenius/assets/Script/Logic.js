@@ -119,10 +119,6 @@ getResult(){
   return result
 }
 
-// module.exports = {
-//   updateQuestion: updateQuestion,
-//   answer: answer,
-//   getResult: getResult,
-// }
+
 
 }

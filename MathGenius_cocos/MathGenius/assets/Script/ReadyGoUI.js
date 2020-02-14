@@ -11,46 +11,67 @@
 // const TheMainGame = require('Main');
 
 
+
+
 cc.Class({
     extends: cc.Component,
 
     properties: {
     
         readyLabel:cc.Node,
-        goLabel: cc.Node
+        goLabel: cc.Node,
+        readGoAudio:cc.AudioClip
     },
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+     onLoad () {
 
+     },
+
+    onDestroy: function () {
+        // cc.audioEngine.stop(this.current);
+    },
 
     init: function(){
 
-        console.log('ReadyGoUI start');
+        const showTime = 0.8;
+        const scaleValue = 0.5;
 
         //刚开始显示  准备
         this.readyLabel.active = true;
         this.goLabel.active = false;
 
+        this.readyLabel.scale = 1;
+        this.goLabel.scale = 1;
 
-        //1秒之后显示  开始
+        this.readyLabel.stopAllActions();
+        this.readyLabel.runAction(cc.scaleTo(showTime, scaleValue));
+
+        var that = this;
+
         this.scheduleOnce( function(){
 
-            this.readyLabel.active = false;
-            this.goLabel.active = true;
+            that.readyLabel.active = false;
+            that.goLabel.active = true;
 
-        }.bind(this), 1);
+            that.readyLabel.stopAllActions();
+            that.goLabel.stopAllActions();
+            that.goLabel.runAction(cc.scaleTo(showTime, scaleValue));
 
-        //2秒之后关闭
+        }.bind(this), showTime);
+
         this.scheduleOnce( function(){
+
+            that.readyLabel.stopAllActions();
+            that.goLabel.stopAllActions();
+
+            that.hide();
 
             var theMainGame = cc.find('Canvas/Main').getComponent('Main');
-            theMainGame.init();
-            theMainGame.show();
-            this.hide();
+            theMainGame.startAction();
 
-        }.bind(this), 2);
+        }.bind(this), showTime*2);
     },
 
     start () {
@@ -63,9 +84,13 @@ cc.Class({
     show: function ()
     {
         this.node.active = true;
+
+        cc.audioEngine.play(this.readGoAudio, false, 1);
+
         
     },
     hide: function () {
         this.node.active = false;
     },
+    
 });

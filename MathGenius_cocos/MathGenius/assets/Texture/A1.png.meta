@@ -1,6 +1,6 @@
 {
   "ver": "2.3.3",
-  "uuid": "58326a01-a55c-48ab-8e48-b3d50911b547",
+  "uuid": "65905a49-4a3a-4703-97d0-6c8c1b61d161",
   "type": "sprite",
   "wrapMode": "clamp",
   "filterMode": "bilinear",
@@ -11,8 +11,8 @@
   "subMetas": {
     "A1": {
       "ver": "1.0.4",
-      "uuid": "326bc87d-fca0-44cc-b94f-3c8c7b8c6d0a",
-      "rawTextureUuid": "58326a01-a55c-48ab-8e48-b3d50911b547",
+      "uuid": "e7ff172e-13e4-47d9-8b7a-4f8688e44bd6",
+      "rawTextureUuid": "65905a49-4a3a-4703-97d0-6c8c1b61d161",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
@@ -25,7 +25,7 @@
       "rawWidth": 266,
       "rawHeight": 331,
       "borderTop": 0,
-      "borderBottom": 72,
+      "borderBottom": 0,
       "borderLeft": 0,
       "borderRight": 0,
       "subMetas": {}

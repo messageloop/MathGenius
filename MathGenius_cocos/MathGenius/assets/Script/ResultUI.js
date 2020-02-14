@@ -17,50 +17,48 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+
+
+        buttonAudio:cc.AudioClip,
 
         currentScoreText: cc.Label,
         maxScoreText: cc.Label,
 
         startUI: StartUI,
         okReady: ReadyGoUI1,
+        wxSubContextView: cc.Node,
 
     },
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {},
 
     start () {
 
+    
+        // let bannerAd = wx.createBannerAd({
+        //     adUnitId: '1234234',
+        //     style: {
+        //       left: 10,
+        //       top: 76,
+        //       width: 320
+        //     }
+        //   });
+          
+        //   bannerAd.show();
+
+       
     },
 
-    // update (dt) {},
 
 
     show: function(){
 
-
-
         this.currentScoreText.string = DataBus.currentScore;
-        this.maxScoreText.string = DataBus.maxScore;
+        this.maxScoreText.string = DataBus.getMaxScore();
 
         this.node.active = true;
 
+        let scoreString = this.currentScoreText.string;
+        let maxScoreString = this.maxScoreText.string;
 
     },
     hide: function(){
@@ -69,13 +67,49 @@ cc.Class({
 
     goHome: function(){
 
+        cc.audioEngine.play(this.buttonAudio, false, 1);
+
         this.hide();
         this.startUI.show();
     },
     restart:function(){
 
+        cc.audioEngine.play(this.buttonAudio, false, 1);
+
+
+        var life = DataBus.getLifeValue();
+
+        if (life <= 0)
+        {
+            //生命值+1
+            var life = DataBus.getLifeValue();
+            life++;
+            DataBus.setLifeValue(life);
+
+
+            wx.shareAppMessage({
+                title: '机灵脑袋瓜'
+            })
+            return;
+        }
+
+        //生命值减去1
+        var life = DataBus.getLifeValue();
+        life--;
+        DataBus.setLifeValue(life);
+
         this.hide();
-        this.okReady.show();
+
         this.okReady.init();
+
+        this.okReady.show();
+
+        //游戏主页初始化
+        var theMainGame = cc.find('Canvas/Main').getComponent('Main');
+        theMainGame.init();
+
+        //游戏主页显示
+        theMainGame.show();
     },
+
 });
