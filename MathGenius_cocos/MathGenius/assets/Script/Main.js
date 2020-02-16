@@ -16,7 +16,6 @@ var myAnswer = myLogic.answer();
 var myScore = 0;
 var lastPointTime = new Date().getTime();
 
-var DataBus = require('DataBus');
 
 cc.Class({
     extends: cc.Component,
@@ -86,6 +85,13 @@ cc.Class({
 
         this._theTickitCallBack = function(){
 
+
+
+            if (that.countDownTimes < 0)
+            {
+                return;
+            }
+
             that.countDownTimes--;
 
             //如何倒计时 到了，就把结果页面显示出来
@@ -95,35 +101,57 @@ cc.Class({
                 myScore = Math.round(myScore);
 
                 DataBus.currentScore = myScore;
+
                 if (DataBus.maxScore < myScore)
                 {
                     // DataBus.maxScore = myScore;
                     DataBus.setMaxScore(myScore);
 
-                    wx.setUserCloudStorage({
-                        KVDataList: [{ key: 'score', value: String(myScore) }],
-                        success: res => {
-                            // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
-                            let openDataContext = wx.getOpenDataContext();
-                            openDataContext.postMessage({
-                                type: 'updateMaxScore',
-                            });
-                        },
-                        fail: res => {
-                        }
-                    });
+
+                    if (typeof wx === 'undefined') {
+                        
+                    }else
+                    {
+
+                        wx.setUserCloudStorage({
+                            KVDataList: [{ key: 'score', value: myScore.toString() }],
+                            success: res => {
+                                // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
+                                let openDataContext = wx.getOpenDataContext();
+                                openDataContext.postMessage({
+                                    type: 'updateMaxScore',
+                                });
+                            },
+                            fail: res => {
+                            }
+                        });
+                    }
+
+                    
                 }else
                 {
-                    // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
-                    let openDataContext = wx.getOpenDataContext();
-                    openDataContext.postMessage({
-                        type: 'updateMaxScore',
-                    });
+
+                    if (typeof wx === 'undefined') {
+                        
+                    }else
+                    {
+                                            // 让子域更新当前用户的最高分，因为主域无法得到getUserCloadStorage;
+                        let openDataContext = wx.getOpenDataContext();
+                        openDataContext.postMessage({
+                            type: 'updateMaxScore',
+                        });
+                    }
+
                 }
+
+                // cc.director.getScheduler().unschedule(this.titckAction, this);
+
 
                 that.countDownTimes = MAXCOUNTDOWN;
                 that.hide();
                 that.myResult.show();
+
+
             }
         };
         
@@ -351,7 +379,7 @@ cc.Class({
     },
 
 
-    startAction:function(){
+    titckOn:function(){
 
         if (cc.director.getScheduler().isTargetPaused(this))
         {
@@ -359,7 +387,12 @@ cc.Class({
 
         }else
         {
-            this.titckAction();
+            if (this._theTickitCallBack == null || cc.director.getScheduler().isScheduled(this._theTickitCallBack, this) == false)
+            {
+
+                this.titckAction();
+
+            }
 
         }
 
@@ -381,39 +414,23 @@ cc.Class({
 
         this.pausedView.runAction(this._showAction);
         this._isShowPausedView = true;
-
-
         cc.director.getScheduler().pauseTarget(this);
-
-
-
     },
 
     continueAction:function(){
 
         this.pausedView.runAction(this._hideAction);
         this._isShowPausedView = false;
-
-
         cc.audioEngine.play(this.buttonAudio, false, 1);
-
         this.readyGo.init();
-
         this.readyGo.show();
-
-
     },
     restartAction:function(){
 
         this.pausedView.runAction(this._hideAction);
         this._isShowPausedView = false;
-
-
         cc.audioEngine.play(this.buttonAudio, false, 1);
-
-
         var life = DataBus.getLifeValue();
-
         if (life <= 0)
         {
             //生命值+1
@@ -422,10 +439,17 @@ cc.Class({
             DataBus.setLifeValue(life);
 
 
-            wx.shareAppMessage({
-                title: '机灵脑袋瓜'
-            })
-            return;
+            if (typeof wx === 'undefined') {
+                        
+            }else
+            {
+                wx.shareAppMessage({
+                    title: '机灵脑袋瓜'
+                })
+                return;
+            }
+
+            
         }
 
         //生命值减去1
@@ -438,7 +462,6 @@ cc.Class({
 
         this.readyGo.init();
         this.readyGo.show();
-
     },
     homeAction:function(){
 

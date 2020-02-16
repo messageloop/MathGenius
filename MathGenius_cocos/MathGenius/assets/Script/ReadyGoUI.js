@@ -69,7 +69,7 @@ cc.Class({
             that.hide();
 
             var theMainGame = cc.find('Canvas/Main').getComponent('Main');
-            theMainGame.startAction();
+            theMainGame.titckOn();
 
         }.bind(this), showTime*2);
     },

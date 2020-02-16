@@ -29,6 +29,9 @@ cc.Class({
 
     initFriendInfo () {
 
+
+        this.content.removeAllChildren();
+
         wx.getFriendCloudStorage({
             keyList: ['score'],
             success: (res) => {
@@ -61,8 +64,8 @@ cc.Class({
 
         //Score
         let score = node.getChildByName('Score').getComponent(cc.Label);
-        score.string = user.KVDataList[1].value;
-        console.log(user.KVDataList[1].value);
+        score.string = user.KVDataList[0].value;
+        console.log(user.KVDataList[0].value);
 
         // set avatar
         cc.loader.load({url: user.avatarUrl, type: 'png'}, (err, texture) => {

@@ -87,9 +87,14 @@ cc.Class({
             DataBus.setLifeValue(life);
 
 
-            wx.shareAppMessage({
-                title: '机灵脑袋瓜'
-            })
+            if (typeof wx === 'undefined') {
+                        
+            }else
+            {
+                wx.shareAppMessage({
+                    title: '机灵脑袋瓜'
+                })
+            }
             return;
         }
 

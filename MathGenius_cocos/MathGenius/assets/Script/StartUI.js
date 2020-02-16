@@ -1,3 +1,4 @@
+
 // Learn cc.Class:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/class.html
 //  - [English] http://docs.cocos2d-x.org/creator/manual/en/scripting/class.html
@@ -46,11 +47,15 @@ cc.Class({
 
         this.lifeLabel.string = DataBus.getLifeValue();
 
+        if (typeof wx === 'undefined') {
+                        
+        }else
+        {
 
-
-        wx.shareAppMessage({
-            title: '机灵脑袋瓜'
-          })
+            wx.shareAppMessage({
+                title: '机灵脑袋瓜'
+            });
+        }
      },
 
 
@@ -93,8 +98,6 @@ cc.Class({
         var life = DataBus.getLifeValue();
         life--;
         DataBus.setLifeValue(life);
-
-
     },
 
     show: function(){

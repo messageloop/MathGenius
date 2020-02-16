@@ -26,16 +26,17 @@ module.exports = {
 
         const KEY_BEST_SCORE = "bestScore";
         var bestScore = cc.sys.localStorage.getItem(KEY_BEST_SCORE);
-        if (bestScore == null) {
+        console.log(bestScore);
+        if (bestScore == null || bestScore =='' || bestScore == 'NaN') {
 
 
-            this._maxScore = 0;
+            this.maxScore = 0;
         }else 
         {
 
-            this._maxScore = bestScore;
+            this.maxScore = bestScore;
         }
-        return this._maxScore;
+        return this.maxScore;
      },
 
      setMaxScore: function(value){
@@ -47,7 +48,7 @@ module.exports = {
           }
           cc.sys.localStorage.setItem(KEY_BEST_SCORE, bestScore);
 
-          this._maxScore = value;
+          this.maxScore = value;
      },
 
 
@@ -57,17 +58,17 @@ module.exports = {
 
         const KEY_LIFE_VALUE = "lifeValue";
         var tempLifeValue = cc.sys.localStorage.getItem(KEY_LIFE_VALUE);
-        if (tempLifeValue == null) {
+        if (tempLifeValue == null || tempLifeValue == '' || tempLifeValue == 'NaN') {
 
 
-            this._lifeValue = 8;
-            cc.sys.localStorage.setItem(KEY_LIFE_VALUE, this._lifeValue);
+            this.lifeValue = 8;
+            cc.sys.localStorage.setItem(KEY_LIFE_VALUE, this.lifeValue);
         }else 
         {
 
-            this._lifeValue = tempLifeValue;
+            this.lifeValue = tempLifeValue;
         }
-        return this._lifeValue;
+        return this.lifeValue;
      },
 
      setLifeValue: function(value){
@@ -77,7 +78,7 @@ module.exports = {
           if (value != null && value >=0)
             cc.sys.localStorage.setItem(KEY_LIFE_VALUE, value);
 
-          this._lifeValue = value;
+          this.lifeValue = value;
      },
 
 };
